@@ -4,7 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, recall_score, precision_score
 
 # Importing Iris data set
-iris = pd.read_csv('C:/Users/AylinF/Desktop/IRIS/Iris.csv')
+iris = pd.read_csv('C:/Users/xxxxx/xxxxxxx/IRIS/Iris.csv')
 
 # Display data
 print(iris.head())
@@ -48,4 +48,5 @@ precision_percentage = precision * 100
 print(f"Doğruluk: {accuracy_percentage:.2f}%")
 print(f"Duyarlılık: {recall_percentage:.2f}%")
 print(f"Özgüllük: {precision_percentage:.2f}%")
+
 
