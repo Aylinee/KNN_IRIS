@@ -4,7 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, recall_score, precision_score
 
 # Importing Iris data set
-iris = pd.read_csv('C:/Users/AylinF/Desktop/IRIS/Iris.csv')
+iris = pd.read_csv('C:/Users/xxxxxx/xxxxxxxx/IRIS/Iris.csv')
 
 # Display data
 print(iris.head())
@@ -111,3 +111,4 @@ print(f"Özgüllük: {precision}")
 # Calculate accuracy
 ##accuracy = np.mean(y_pred == y_test)
 ##print(f'Accuracy: {accuracy * 100:.2f}%')
+
