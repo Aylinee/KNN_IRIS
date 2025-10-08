@@ -7,91 +7,110 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, recall_score, precision_score
 
-# Veri setini dosyadan yükleyin
-iris = pd.read_csv('C:/Users/AylinF/Desktop/IRIS/Iris.csv')
+Project Summary: K-Nearest Neighbors (k-NN) Analysis on Iris Dataset
+This project explores the impact of various data splitting parameters and model configurations on the performance of the k-Nearest Neighbors (k-NN) classification algorithm using the classic Iris dataset.
 
-# Özellikleri ve hedef değişkeni ayırın
+Data Preparation and Feature Engineering
+The Iris dataset was loaded and prepared as follows:
+
+Python
+
+# Load the dataset
+iris = pd.read_csv('C:/Users/xxxxx/xxxxx/IRIS/Iris.csv')
+
+# Separate features and the target variable
 X = iris.drop(columns=['Id', 'Species']).astype(float)
 y = iris['Species']
+Analysis Scenarios: Impact of test_size and random_state
+We tested the model's robustness and generalization ability by using three different test sizes and two different random states to partition the data.
 
-Veri işlemenin KNN’deki veri doğruluğunu test size’ın önemini bildiğimişz için 3 farklı test size kullanıldı.İlk program KNNplural.py’de 0.4 yani datanın %40’ı test olarak kullanıldı. Random state 42 olarak girildi. 
+Program File	Test Size	Random State	Purpose
+KNNplural.py	0.4 (40%)	42	Using a larger test set (40%).
+K-NnwithWeighted.py	0.3 (30%)	42	Standard test size (30%).
+irisK-NN.py	0.3 (30%)	2	Same test size (30%) but different data split using random_state=2.
+KNNWithIRIS.py	0.2 (20%)	42	Using a smaller test set (20%).
 
-# Veriyi eğitim ve test setlerine bölün
+E-Tablolar'a aktar
+The data splitting code structure for each scenario:
+
+Python
+
+# Example for KNNplural.py
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
 
-K-NnwithWeighted programında %30 test datası olarak kullanılmıştır.
-
- # Veriyi eğitim ve test setlerine bölün
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
- irisK-NN.py programında test değeri %30 olarak belirlenmiş olup random state değeri 2 olarak seçilmiştir. 
-
-# Veriyi eğitim ve test setlerine bölün
+# Example for irisK-NN.py
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=2)
+k-NN Model Setup and Training
+A k-NN classifier was instantiated with k=3 neighbors. This value was chosen because the Iris dataset has three classes (Setosa, Versicolor, Virginica), and k=3 provides a good balance: low k values increase sensitivity to noise, while high k values over-generalize the model.
 
-KNNWithIRIS.py programındaysa, %20 test kullanıldı ve Random state aynı seçildi. 
+Scenario 1: Uniform Weighting (Plurality)
+The first program (KNNplural.py) used a uniform weighting scheme, where all neighbors have equal influence:
 
-# Veriyi eğitim ve test setlerine bölün
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+Python
 
-
-k-NN Modeli Oluşturma
-k-NN sınıflandırıcısı oluşturulmuş ve uygun k değeri (k=3) seçilmiştir. değerinin 3 olarak belirlenmesinin temel sebebi, Iris veri setinde bulunan üç sınıf (Setosa, Versicolor, Virginica) arasındaki ayrımın dengeli bir şekilde gerçekleştirilmesini sağlamasıdır. Düşük k değerleri algoritmanın gürbüzlük seviyesini azaltabilirken, yüksek k değerleri ise modelin fazla genelleşmesine neden olabilir. k=3, komşuluk yapısı için optimal bir dengenin sağlandığı değer olarak belirlenmiştir. Model, eğitim verisi ile eğitilmiştir.
-İlk değerlendirme Plural olarak en yakın komşuluğun değerlendirilmesini sağlanmıştır. Bu sebeple kod içinde bu kısım şu şekilde belirtilmiştir. 
-
-# k-NN sınıflandırıcısını oluşturun
+# Create the k-NN classifier with uniform weights
 knn = KNeighborsClassifier(n_neighbors=3, weights='uniform')
 knn.fit(X_train, y_train)
-Diğer değerlendirmelerde pythonda normal K-NN algoritmasını görmek için aşağıdaki gibi kodlandı (irisK-NN.py KNNwithIRIS.py K-NnwithWeighted.py ):
+Scenario 2: Default k-NN
+The other programs (irisK-NN.py, KNNWithIRIS.py, K-NnwithWeighted.py) used the default settings (which is also uniform weighting):
 
-# k-NN sınıflandırıcısını oluşturun
+Python
+
+# Create the k-NN classifier with default settings (uniform weights)
 knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit(X_train, y_train)
-Modeli Değerlendirme
-Model, test verisi üzerinde tahminler yapmış ve doğruluk, duyarlılık ve özgüllük metrikleri hesaplanmıştır. Bu metrikler, modelin performansını değerlendirmek için kullanılmıştır.
-python
-# Test verisi üzerinde tahminler yapın
+Model Evaluation and Performance Metrics
+The models were evaluated by making predictions on the test set and calculating standard classification metrics: Accuracy, Recall, and Precision.
+
+Python
+
+# Make predictions on the test data
 y_pred = knn.predict(X_test)
+We examined the effect of the averaging method in metric calculation:
 
-Başarım metriklerinde K-NN’in sağladığı  avantajları değerlendirmek için 3 farklı durum değerlendirilmiştir. KNNwithWeighted.py dışındakiler aşağıdaki şekilde başarımları hesaplanmıştır.
+Standard Evaluation (Macro Average)
+Used in KNNplural.py, irisK-NN.py, and KNNWithIRIS.py. Macro averaging calculates metrics independently for each class and then takes the unweighted average, treating all classes equally.
 
+Python
 
-# Başarım metriklerini hesaplayın
+# Calculate performance metrics using Macro Average
 accuracy = accuracy_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred, average='macro')
 precision = precision_score(y_test, y_pred, average='macro')
+Weighted Evaluation (Weighted Average)
+Used in K-NnwithWeighted.py. Weighted averaging is used to account for class imbalance by weighting the average by the number of true instances for each class.
 
+Python
 
-Ağırlıklı hesaplamyı karşılaştırmak için hazırlanan  KNNwithWeighted.py program parçası şuşekildedir:
-
-# Başarım metriklerini hesaplayın
+# Calculate performance metrics using Weighted Average
 accuracy = accuracy_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred, average='weighted')
 precision = precision_score(y_test, y_pred, average='weighted')
+Output Formatting
+All results are presented as percentages:
 
+Python
 
-İstenen başarım sonuçlarının yüzdelik oplarak gösterilmesi için aşğıdaki gösterim yapılmıştır. 
 accuracy_percentage = accuracy * 100
 recall_percentage = recall * 100
 precision_percentage = precision * 100
 
-print(f"Doğruluk: {accuracy_percentage:.2f}%")
-print(f"Duyarlılık: {recall_percentage:.2f}%")
-print(f"Özgüllük: {precision_percentage:.2f}%")
+print(f"Accuracy: {accuracy_percentage:.2f}%")
+print(f"Recall: {recall_percentage:.2f}%")
+print(f"Precision: {precision_percentage:.2f}%")
 
-Sonuçlar
-<img width="940" height="822" alt="image" src="https://github.com/user-attachments/assets/d7d369dc-7178-4d73-823e-712179547228" />
 
 irisK-NN>>%100 
 
 
-<img width="940" height="1112" alt="image" src="https://github.com/user-attachments/assets/80e097ac-467a-4f94-a2db-a5d7bc1da2f9" />
+
+<img width="620" height="539" alt="image" src="https://github.com/user-attachments/assets/d458fcfb-fc63-4360-93dc-953b5bce8fe8" />
 
 
 
 KNNplural.py>>%98
 
-<img width="940" height="944" alt="image" src="https://github.com/user-attachments/assets/5dc4c235-7cc0-4f68-ab6a-37bf8f7e3d86" />
+<img width="492" height="580" alt="image" src="https://github.com/user-attachments/assets/5590ed31-1365-4f6d-a6a6-6f2e2d17eaf3" />
 
 
 
@@ -101,15 +120,21 @@ KNNplural.py>>%98
 
 KNNwithIRIS.py>>%100
 
-<img width="940" height="944" alt="image" src="https://github.com/user-attachments/assets/32b93108-be73-42c9-83c5-252fdc266f59" />
+
+
+<img width="502" height="508" alt="image" src="https://github.com/user-attachments/assets/a4fca680-bcba-4807-a943-c4aae56f2019" />
+
 
 
 
 K-NJNwithWeighted>>%100 
 
-<img width="940" height="812" alt="image" src="https://github.com/user-attachments/assets/38be6a9e-f98c-4732-a27f-f6195ba8e8d5" />
+<img width="625" height="565" alt="image" src="https://github.com/user-attachments/assets/9ae9967d-7002-4dd0-af47-166d481ca0b7" />
 
 
-Tartışma
-Bu çalışmada, k-NN algoritması kullanılarak Iris veri seti üzerinde sınıflandırma işlemi gerçekleştirilmiştir. Modelin performansı, doğruluk, duyarlılık ve özgüllük metrikleri ile değerlendirilmiş ve yüksek başarı elde edilmiştir. k-NN algoritması, basit ve etkili bir sınıflandırma yöntemi olarak bu tür veri setlerinde %100 başarılı sonuçlar vermektedir. 
+##Conclusion and Performance Summary
+This study successfully implemented the k-Nearest Neighbors (k-NN) algorithm for the classification of the Iris dataset.
 
+The model's performance was rigorously evaluated using key metrics: Accuracy, Recall, and Precision. Across multiple testing scenarios (different test sizes and random states), the k-NN algorithm demonstrated exceptionally high success rates, achieving 100% classification accuracy in several tests.
+
+This confirms k-NN as a simple, yet highly effective non-parametric classification method, particularly well-suited for datasets like Iris where class separation is distinct.
